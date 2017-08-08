@@ -32,5 +32,17 @@ static void enumerar_disp_alm_masivo(struct udev* udev){
 	struct udev_enumerate* enumerar =  udev_enumerate_new(udev);
 	
 	//Buscamos los dispositivos USB del tipo SCSI (MASS STORAGE)
-
+	udev_enumerate_add_match_subsystem(enumerar, "scsi");
+	udev_enumerate_add_match_property(enumerar, "DEVTYPE", "scsi_device");
+	udev_enumerate_scan_devices(enumerar);
+	
+	//Obtenemos los dispositivos con dichas caracteristicas
+	struct udev_list_entry *dispositivos = udev_enumerate_get_list_entry(enumerar);
+	struct udev_list_entry *entrada;
+	
+	//Recorremos la lista obtenida
+	udev_list_entry_foreach(entrada, dispositivos){
+		const char *ruta = udev_list_entry_get_name(entrada);
+		
+	}
 }
