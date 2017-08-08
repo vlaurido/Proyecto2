@@ -1,6 +1,6 @@
-proyecto2: proyecto2.c 
+proceso_usb: proceso_usb.c 
 	gcc -Wall -g $^ -lm -o $@
 
 .PHONY: clean
 clean:
-	rm -rf proyecto2
+	rm -rf proceso_usb
