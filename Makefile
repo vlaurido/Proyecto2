@@ -1,6 +1,11 @@
+all: proceso_usb servidor_web
+
 proceso_usb: proceso_usb.c 
+	gcc -Wall -g $^ -lm -o $@
+	
+servidor_web: servidor_web.c 
 	gcc -Wall -g $^ -lm -o $@
 
 .PHONY: clean
 clean:
-	rm -rf proceso_usb
+	rm -rf proceso_usb servidor_web
