@@ -1,7 +1,7 @@
 all: proceso_usb servidor_web
 
 proceso_usb: proceso_usb.c 
-	gcc -Wall -g $^ -lm -o $@
+	gcc -Wall -g $^ -lm -o $@ -ludev
 	
 servidor_web: servidor_web.c 
 	gcc -Wall -g $^ -lm -o $@
