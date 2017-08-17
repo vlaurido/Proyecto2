@@ -3,6 +3,7 @@ En este proyecto, se creará un programa que se encargará de monitorear los pue
 
 # Proceso USB
 Para poder poner a correr procesos_usb.c es necesario contar con la libreria libudev-dev, la cual se puede instalar en la Terminal con permisos de root con el comando sudo apt-get install libudev-dev.
+Adicionalmente, es necesario contar con la librería apue.3e, la cual tiene funciones necesarias para que proceso_usb funcione como daemon. Este paquete ya se encuentra descargado en el proyecto.
 
 # Servidor Web
 Para poder poner a correr servidor_web.c es necesario contar con la libreria libmicrohttpd, la cual se puede instalar en la Terminal con permisos de root con el comando sudo apt-get install libmicrohttpd.
