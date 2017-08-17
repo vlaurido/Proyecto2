@@ -1,6 +1,7 @@
 //Librerias usb y main
 #include <stdio.h>
 #include <libudev.h>
+#include <mntent.h> /*mtab*/
 
 //Librerias daemon
 #include <syslog.h>
@@ -8,7 +9,6 @@
 #include <sys/resource.h>
 #include <stdlib.h>
 #include "apue.3e/lib/error.c"
-//#include "apue.h"
 
 /*ESTRUCTURAS*/
 
@@ -34,9 +34,20 @@ struct udev_device* obtener_hijo(struct udev* udev, struct udev_device* padre, c
 	return hijo;
 }
 
+//Estructura para la función getmntent() 
+struct mntent {
+               char *mnt_fsname;   /* name of mounted filesystem */
+               char *mnt_dir;      /* filesystem path prefix */
+               char *mnt_type;     /* mount type (see mntent.h) */
+               char *mnt_opts;     /* mount options (see mntent.h) */
+               int   mnt_freq;     /* dump frequency in days */
+               int   mnt_passno;   /* pass number on parallel fsck */
+           };
+
 /*FUNCIONES*/
 
 //Definimos función para para que un programa se pueda autoinicializar como daemon
+//Obtenida de https://notes.shichao.io/apue/ch13/
 void daemonize(const char *cmd){
     int i, fd0, fd1, fd2;
     pid_t pid;
@@ -136,7 +147,14 @@ static void enumerar_disp_alm_masivo(struct udev* udev){
 }
 
 /*MAIN*/
+int main(){
+    struct udev *p = udev_new();
+    enumerar_disp_alm_masivo(p);
+}
 
+//Todo dentro de un while(1)
+//Con sleep UN hilo que monitorea dispositivos USB
+//Otro que recibe y lee datos del socket
 
 
 
