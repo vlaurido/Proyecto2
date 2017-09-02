@@ -34,16 +34,6 @@ struct udev_device* obtener_hijo(struct udev* udev, struct udev_device* padre, c
 	return hijo;
 }
 
-//Estructura para la función getmntent() 
-struct mntent {
-               char *mnt_fsname;   /* name of mounted filesystem */
-               char *mnt_dir;      /* filesystem path prefix */
-               char *mnt_type;     /* mount type (see mntent.h) */
-               char *mnt_opts;     /* mount options (see mntent.h) */
-               int   mnt_freq;     /* dump frequency in days */
-               int   mnt_passno;   /* pass number on parallel fsck */
-           };
-
 /*FUNCIONES*/
 
 //Definimos función para para que un programa se pueda autoinicializar como daemon

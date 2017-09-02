@@ -6,7 +6,7 @@ Para poder poner a correr procesos_usb.c es necesario contar con la libreria lib
 Adicionalmente, es necesario contar con la librería apue.3e, la cual tiene funciones necesarias para que proceso_usb funcione como daemon. Este paquete ya se encuentra descargado en el proyecto.
 
 # Servidor Web
-Para poder poner a correr servidor_web.c es necesario contar con la libreria libmicrohttpd, la cual se puede instalar en la Terminal con permisos de root con el comando sudo apt-get install libmicrohttpd.
+Para poder poner a correr servidor_web.c es necesario contar con la libreria libmicrohttpd, la cual se puede instalar en la Terminal con permisos de root con el comando sudo apt-get install libmicrohttpd. El servidor web recibe solicitudes GET/POST+JSON, por lo cual se usa la libreria jsmn para poder parsear en formato JSON. Esta libreria ya viene instalada con el proyecto.
 
 # Autores
 Laurido Aguirre Viviana Priscilla & Rivadeneira Sevilla Alexis Leonardo.
