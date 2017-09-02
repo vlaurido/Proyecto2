@@ -41,6 +41,17 @@ int answer_to_connection (void *cls, struct MHD_Connection *connection,
 }
 
 /*MAIN*/
-int main(){
-    answer_to_connection(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+int main ()
+{
+  struct MHD_Daemon *daemon;
+
+  daemon = MHD_start_daemon (MHD_USE_SELECT_INTERNALLY, PORT, NULL, NULL,
+                             &answer_to_connection, NULL, MHD_OPTION_END);
+  if (NULL == daemon) return 1;
+  getchar ();
+
+  MHD_stop_daemon (daemon);
+  return 0;
 }
+
+
