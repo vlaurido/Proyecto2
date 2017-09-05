@@ -1,11 +1,19 @@
-all: proceso_usb servidor_web
+all: proceso_usb servidor_web proceso_daemon
 
-proceso_usb: ./src/proceso_usb.c 
-	gcc -Wall -g src/proceso_usb.c -lm -o bin/proceso_usb -ludev
-	
-servidor_web: ./src/servidor_web.c 
-	gcc -Wall -g src/servidor_web.c -lm -o bin/servidor_web -lmicrohttpd
+proceso_usb: objects
+	gcc -Wall ./obj/proceso_usb.o -ludev -o ./bin/proceso_usb
 
-.PHONY: clean 
+proceso_daemon: objects
+	gcc -Wall ./obj/proceso_daemon.o -o ./bin/proceso_daemon
+
+servidor_web: objects
+	gcc -Wall ./obj/servidor_web.o -lmicrohttpd -o ./bin/servidor_web
+
+objects:
+	gcc -Wall -Iinclude/ -c src/proceso_usb.c -o obj/proceso_usb.o
+	gcc -Wall -Iinclude/ -c src/proceso_daemon.c -o obj/proceso_daemon.o
+	gcc -Wall -Iinclude/ -c src/servidor_web.c -o obj/servidor_web.o
+
+.PHONY: clean
 clean:
 	rm -rf bin/*

@@ -7,11 +7,11 @@
 #include <stddef.h>             /* for offsetof */
 #include <string.h>             /* for convenience */
 #include <unistd.h>             /* for convenience */
-#include <signal.h>             /* for SIG_ERR */ 
-#include <netdb.h> 
-#include <errno.h> 
-#include <syslog.h> 
-#include <sys/socket.h> 
+#include <signal.h>             /* for SIG_ERR */
+#include <netdb.h>
+#include <errno.h>
+#include <syslog.h>
+#include <sys/socket.h>
 #include <fcntl.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -20,6 +20,8 @@
 //Librerias http
 #include <sys/select.h>
 #include <microhttpd.h>
+
+#define PORT 8080
 
 //Función que es llamada cada vez que llega un request apropiado
 int answer_to_connection (void *cls, struct MHD_Connection *connection,
@@ -32,7 +34,7 @@ int answer_to_connection (void *cls, struct MHD_Connection *connection,
     const char *page  = "<html><body>Hello, browser!</body></html>";
     struct MHD_Response *response;
     int ret;
-  
+
     response = MHD_create_response_from_buffer (strlen (page), (void*) page, MHD_RESPMEM_PERSISTENT);
     ret = MHD_queue_response (connection, MHD_HTTP_OK, response);
     MHD_destroy_response (response);
@@ -53,5 +55,3 @@ int main ()
   MHD_stop_daemon (daemon);
   return 0;
 }
-
-
