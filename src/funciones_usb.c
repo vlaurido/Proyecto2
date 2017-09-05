@@ -1,17 +1,36 @@
 //Librerias usb y main
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <libudev.h>
 #include <mntent.h> /*mtab*/
-
-//Librerias daemon
-//#include <syslog.h>
-//#include <fcntl.h>
-//#include <sys/resource.h>
-//#include <stdlib.h>
+#include "funciones_usb.h"
 
 /*ESTRUCTURAS*/
 
-//Definimos estructura para obtener dispositivo
+//Estructura que representa a un dispositivo
+//Tiene el mismo formato de retorno que el diccionario
+//En la funbcion listar_dispositivos
+typedef struct dispositivo{
+	char *nombre;
+	char *id;
+	char *vendor;
+	char *montaje;
+	char *nodo;
+}dispositivo;
+
+//Estructura que representa una lista de dispositivos
+//La cual posee un puntero a dispositivos usb
+//y el numero de dispositivos que hay en la lista
+typedef struct dispositivos{
+	dispositivo **dispositivos_usb;
+	int largoLista;
+}dispositivos;
+
+
+/*FUNCIONES*/
+
+//Definimos funcion para obtener dispositivo
 struct udev_device* obtener_hijo(struct udev* udev, struct udev_device* padre, const char* subsistema){
 	struct udev_device* hijo = NULL;
 	struct udev_enumerate *enumerar = udev_enumerate_new(udev);
@@ -33,11 +52,12 @@ struct udev_device* obtener_hijo(struct udev* udev, struct udev_device* padre, c
 	return hijo;
 }
 
-/*FUNCIONES*/
-
 //Definimos función para enumerar los dispositivos de almacenamiento masivo
-static void enumerar_disp_alm_masivo(struct udev* udev){
+struct dispositivos* enumerar_disp_alm_masivo(struct udev* udev){
 	struct udev_enumerate* enumerar =  udev_enumerate_new(udev);
+	dispositivos *lista = (dispositivos *)malloc(sizeof(dispositivo *));
+	lista->dispositivos_usb =(dispositivo **)malloc(sizeof(dispositivo *));
+	lista->largoLista = 0;
 
 	//Buscamos los dispositivos USB del tipo SCSI (MASS STORAGE)
 	udev_enumerate_add_match_subsystem(enumerar, "scsi");
@@ -49,6 +69,7 @@ static void enumerar_disp_alm_masivo(struct udev* udev){
 	struct udev_list_entry *entrada;
 
 	//Recorremos la lista obtenida
+	int contElementos = 0;
 	udev_list_entry_foreach(entrada, dispositivos){
 		const char *ruta = udev_list_entry_get_name(entrada);
 		struct udev_device* scsi = udev_device_new_from_syspath(udev, ruta);
@@ -60,7 +81,34 @@ static void enumerar_disp_alm_masivo(struct udev* udev){
 		struct udev_device* usb = udev_device_get_parent_with_subsystem_devtype(scsi, "usb", "usb_device");
 
 		if (block && scsi_disk &&usb){
-			printf("block = %s, usb = %s:%s, scsi = %s\n", udev_device_get_devnode(block), udev_device_get_sysattr_value(usb, "idVendor"), udev_device_get_sysattr_value(usb, "idProduct"), udev_device_get_sysattr_value(usb, "vendor"));
+			dispositivo *dispUsb = (dispositivo *)malloc(sizeof(dispositivo));
+			char *id = (char *)malloc(sizeof(char));
+			char *vendor = (char *)malloc(sizeof(char));
+			char *montaje = (char *)malloc(sizeof(char));
+			char *nodo = (char *)malloc(sizeof(char));
+
+			strcpy(id,(char *)udev_device_get_sysattr_value(usb, "idProduct"));
+			strcpy(vendor,(char *)udev_device_get_sysattr_value(usb, "vendor"));
+			strcpy(nodo,(char *)udev_device_get_devnode(block));
+
+			dispUsb->nombre = "";
+			dispUsb->id = id;
+			dispUsb->vendor = vendor;
+			dispUsb->nodo = nodo;
+
+			struct mntent *m;
+			FILE *f = setmntent("/etc/mtab", "r");
+
+			while((m = getmntent(f))){
+				if (strstr(m->mnt_fsname,udev_device_get_devnode(block)) != NULL)
+				{
+					strcpy(montaje, (char *)m->mnt_dir);
+					dispUsb->montaje = montaje;
+				}
+			}
+			contElementos++;
+			*((lista->dispositivos_usb)+contElementos) = dispUsb;
+			endmntent(f);
 		}
 
 		if (block){
@@ -75,14 +123,7 @@ static void enumerar_disp_alm_masivo(struct udev* udev){
 	}
 
 	udev_enumerate_unref(enumerar);
-}
 
-/*MAIN*/
-int main(){
-    struct udev *p = udev_new();
-    enumerar_disp_alm_masivo(p);
+	lista->largoLista = contElementos;
+	return lista;
 }
-
-//Todo dentro de un while(1)
-//Con sleep UN hilo que monitorea dispositivos USB
-//Otro que recibe y lee datos del socket

@@ -15,7 +15,8 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/resource.h>
-#include "usb.h" //Incluir funciones para manejar los dispositivos montados
+#include <libudev.h>
+#include "funciones_usb.h"
 
 #define BUFLEN 1000000
 #define QLEN 10
@@ -34,6 +35,7 @@ void servidor_usb(){
 	int clfd;
 	unsigned int clsize;
 	int n;
+	struct udev *p;
 
 	puerto = 8080;
 
@@ -69,8 +71,20 @@ void servidor_usb(){
 	}
 
 	while(1) {
-
 		clfd = accept(sockfd,(struct sockaddr *)&direccion_cliente,&clsize);
+		if (clfd < 0) {
+				syslog( LOG_ERR, "Error al aceptar la conexion: %s", strerror(errno));
+				exit(-1);
+		}
+
+		char *request = malloc(BUFLEN*sizeof(char *));
+		recv(clfd, request, BUFLEN, 0);
+
+	  if ((strstr(request, "GET") != NULL) && (strstr(request, "listar_dispositivos") != NULL)){
+			p = udev_new();
+			struct dispositivos *listaDisp = enumerar_disp_alm_masivo(p);
+			send(clfd, listaDisp, 1000, 0);
+		}
 		close(clfd);
 	}
 }
@@ -102,8 +116,7 @@ int main(int argc, char* argv[]){
   close(2);
 
   while(1) {
-      //CODIGO DAEMON
+      servidor_usb();
   }
-
   return 0;
 }
