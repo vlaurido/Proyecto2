@@ -15,6 +15,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/resource.h>
+#include "usb.h" //Incluir funciones para manejar los dispositivos montados
 
 #define BUFLEN 1000000
 #define QLEN 10

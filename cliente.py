@@ -18,8 +18,8 @@ def menu():
 
 print("** Cliente python de prueba **")
 
-IP = input("Ingrese la IP a usar: ")
-PORT = input("Ingrese el puerto a usar: ")
+IP = "127.0.0.1"
+PORT = "8080"
 URL = "http://"+IP+":"+PORT
 
 menu()
@@ -29,7 +29,7 @@ while option != '1' and option != '2' and option != '3' and option != '4' and op
 
 while (option != '5'):
     if option == '1':
-        r = requests.get(url+"/listar__dispositivos")
+        r = requests.get(URL+"/listar__dispositivos")
         print("Estado: ", r.status_code)
         print("JSON: ", r.json())
     
