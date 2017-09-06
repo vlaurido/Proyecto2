@@ -13,17 +13,24 @@ Para poder poner a correr servidor_web.c es necesario contar con la libreria lib
 
   sudo apt-get install libmicrohttpd
 
-El servidor web recibe solicitudes GET/POST+JSON, por lo cual se usa la libreria jsmn para poder parsear en formato JSON. Esta libreria ya viene instalada con el proyecto.
+El servidor web recibe solicitudes GET/POST+JSON, por lo cual se usa la libreria jsmn para poder parsear en formato JSON. Esta libreria ya viene instalada en el proyecto.
 
 # Cliente Python
 Para poder probar el programa, se facilita un archivo cliente.py el cual le da las indicaciones de como enviar los requerimientos al servidor web.
   1) Para listar dispositivos:
+
     cliente.py <IP> <GET> <listar_dispositivos>
+
   2) Para nombrar dispositivo:
+
     cliente.py <IP> <POST> <nombrar_dispositivo> <nodo> <nombre>
+
   3) Para leer archivo:
+
     cliente.py <IP> <GET> <leer_archivo> <nombre> <nombre archivo>
+
   4) Para escribir archivo:
+
     cliente.py <IP> <POST> <escribir_archivo> <nombre> <nombre archivo> <tamano contenido> <contenido>
 
 # Autores
